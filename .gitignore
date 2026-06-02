@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.omo/evidence/
+*.log
+.env
+test-config.json
+/bridge/

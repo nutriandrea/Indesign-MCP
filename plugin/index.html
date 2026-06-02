@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InDesign MCP Bridge</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1e1e1e;
+      color: #ccc;
+      padding: 12px;
+      font-size: 13px;
+    }
+    #status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px 12px;
+      background: #2a2a2a;
+      border-radius: 6px;
+    }
+    #indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #555;
+      transition: background 0.3s;
+    }
+    #indicator.connected { background: #4caf50; box-shadow: 0 0 6px #4caf5066; }
+    #indicator.disconnected { background: #f44336; }
+    #indicator.connecting { background: #ff9800; animation: pulse 1s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    #log {
+      background: #111;
+      border-radius: 6px;
+      padding: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    #log .entry { padding: 2px 0; border-bottom: 1px solid #222; }
+    #log .entry:last-child { border-bottom: none; }
+    #log .info { color: #90caf9; }
+    #log .success { color: #81c784; }
+    #log .error { color: #e57373; }
+    #log .request { color: #ffb74d; }
+    #log .response { color: #aed581; }
+    .config-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .config-row input {
+      flex: 1;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 4px;
+      color: #ccc;
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+    .config-row button {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .config-row button:hover { background: #1565c0; }
+    .config-row button:disabled { background: #555; cursor: default; }
+  </style>
+</head>
+<body>
+  <div id="status">
+    <div id="indicator" class="disconnected"></div>
+    <span id="statusText">Disconnected</span>
+  </div>
+  <div class="config-row">
+    <input type="text" id="serverUrl" value="ws://localhost:8120" placeholder="ws://host:port" />
+    <button id="connectBtn">Connect</button>
+  </div>
+  <div id="log"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>
