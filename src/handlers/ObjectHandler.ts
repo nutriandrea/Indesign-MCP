@@ -15,51 +15,7 @@ export class ObjectHandler implements IHandler {
 
   public get tools(): ToolDefinition[] {
     return [
-      // Layer tools
-      {
-        name: 'layer_create',
-        description: 'Create a new layer in the active document',
-        inputSchema: {
-          name: z.string().default('Layer'),
-          visible: z.boolean().default(true),
-          locked: z.boolean().default(false),
-          printable: z.boolean().default(true),
-          guideLayer: z.boolean().default(false),
-        },
-        handler: compose(withLogging('layer_create'), withErrorHandling())(this.createLayer.bind(this)),
-      },
-      {
-        name: 'layer_list',
-        description: 'List all layers in the active document',
-        inputSchema: {},
-        handler: compose(withLogging('layer_list'), withErrorHandling())(this.listLayers.bind(this)),
-      },
-      {
-        name: 'layer_setProperties',
-        description: 'Set properties of a layer',
-        inputSchema: {
-          index: z.number().int().min(0),
-          visible: z.boolean().optional(),
-          locked: z.boolean().optional(),
-          printable: z.boolean().optional(),
-        },
-        handler: compose(withLogging('layer_setProperties'), withErrorHandling())(this.setLayerProperties.bind(this)),
-      },
-      // Image tools
-      {
-        name: 'image_place',
-        description: 'Place an image file into a page',
-        inputSchema: {
-          filePath: z.string(),
-          pageIndex: z.number().int().min(0),
-          x: z.number(),
-          y: z.number(),
-          width: z.number().positive().optional(),
-          height: z.number().positive().optional(),
-          layerIndex: z.number().int().min(0).optional(),
-        },
-        handler: compose(withLogging('image_place'), withErrorHandling())(this.placeImage.bind(this)),
-      },
+      // Image tools (non-overlapping — kept for backward compat)
       {
         name: 'image_list',
         description: 'List all placed images in a page',
@@ -71,16 +27,6 @@ export class ObjectHandler implements IHandler {
         description: 'Get link status for all placed images',
         inputSchema: {},
         handler: compose(withLogging('image_getLinks'), withErrorHandling())(this.getImageLinks.bind(this)),
-      },
-      {
-        name: 'image_relink',
-        description: 'Relink a placed image to a new file',
-        inputSchema: {
-          imageIndex: z.number().int().min(0),
-          newFilePath: z.string(),
-          pageIndex: z.number().int().min(0),
-        },
-        handler: compose(withLogging('image_relink'), withErrorHandling())(this.relinkImage.bind(this)),
       },
       // Shape tools
       {
@@ -129,91 +75,7 @@ export class ObjectHandler implements IHandler {
     return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   }
 
-  // Layer methods
-  private async createLayer(args: unknown, _extra: any): Promise<ToolResult> {
-    const params = z.object({
-      name: z.string().default('Layer'),
-      visible: z.boolean().default(true),
-      locked: z.boolean().default(false),
-      printable: z.boolean().default(true),
-      guideLayer: z.boolean().default(false),
-    }).parse(args);
-    const escName = this.escape(params.name);
-    const code = `
-      var layer = app.activeDocument.layers.add({name: "${escName}"});
-      layer.visible = ${params.visible};
-      layer.locked = ${params.locked};
-      layer.printable = ${params.printable};
-      JSON.stringify({ name: layer.name, index: layer.index });
-    `;
-    const response = await this.executor.execute(code);
-    return formatResponse(response.result);
-  }
-
-  private async listLayers(_args: unknown, _extra: any): Promise<ToolResult> {
-    const code = `
-      var layers = app.activeDocument.layers;
-      var result = [];
-      for (var i = 0; i < layers.length; i++) {
-        result.push({
-          name: layers[i].name,
-          index: i,
-          visible: layers[i].visible,
-          locked: layers[i].locked,
-          printable: layers[i].printable
-        });
-      }
-      JSON.stringify(result);
-    `;
-    const response = await this.executor.execute(code);
-    return formatResponse(response.result);
-  }
-
-  private async setLayerProperties(args: unknown, _extra: any): Promise<ToolResult> {
-    const params = z.object({
-      index: z.number().int().min(0),
-      visible: z.boolean().optional(),
-      locked: z.boolean().optional(),
-      printable: z.boolean().optional(),
-    }).parse(args as Record<string, unknown>);
-    let code = `var layer = app.activeDocument.layers[${params.index}];\n`;
-    if (params.visible !== undefined) code += `layer.visible = ${params.visible};\n`;
-    if (params.locked !== undefined) code += `layer.locked = ${params.locked};\n`;
-    if (params.printable !== undefined) code += `layer.printable = ${params.printable};\n`;
-    code += '"set"';
-    const response = await this.executor.execute(code);
-    return formatResponse(response.result);
-  }
-
   // Image methods
-  private async placeImage(args: unknown, _extra: any): Promise<ToolResult> {
-    const params = z.object({
-      filePath: z.string(),
-      pageIndex: z.number().int().min(0),
-      x: z.number(),
-      y: z.number(),
-      width: z.number().positive().optional(),
-      height: z.number().positive().optional(),
-      layerIndex: z.number().int().min(0).optional(),
-    }).parse(args as Record<string, unknown>);
-    const escPath = this.escape(params.filePath);
-    const scaleCode = params.width && params.height
-      ? `image.geometricBounds = [${params.y}, ${params.x}, ${params.y + params.height}, ${params.x + params.width}];`
-      : '';
-    const code = `
-      var page = app.activeDocument.pages[${params.pageIndex}];
-      var image = page.place(File("${escPath}"))[0];
-      ${scaleCode}
-      JSON.stringify({
-        index: image.index,
-        bounds: image.geometricBounds,
-        linkStatus: image.imageLink ? image.imageLink.status : 'unknown'
-      });
-    `;
-    const response = await this.executor.execute(code);
-    return formatResponse(response.result);
-  }
-
   private async listImages(args: unknown, _extra: any): Promise<ToolResult> {
     const params = z.object({ pageIndex: z.number().int().min(0) }).parse(args as Record<string, unknown>);
     const code = `
@@ -248,22 +110,6 @@ export class ObjectHandler implements IHandler {
         });
       }
       JSON.stringify(result);
-    `;
-    const response = await this.executor.execute(code);
-    return formatResponse(response.result);
-  }
-
-  private async relinkImage(args: unknown, _extra: any): Promise<ToolResult> {
-    const params = z.object({
-      imageIndex: z.number().int().min(0),
-      newFilePath: z.string(),
-      pageIndex: z.number().int().min(0),
-    }).parse(args as Record<string, unknown>);
-    const escPath = this.escape(params.newFilePath);
-    const code = `
-      var img = app.activeDocument.pages[${params.pageIndex}].allGraphics[${params.imageIndex}];
-      img.imageLink.relink(File("${escPath}"));
-      "relinked";
     `;
     const response = await this.executor.execute(code);
     return formatResponse(response.result);

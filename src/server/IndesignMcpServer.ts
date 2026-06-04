@@ -28,6 +28,12 @@ import { EffectHandler } from '../handlers/EffectHandler.js';
 import { TransformHandler } from '../handlers/TransformHandler.js';
 import { TableStyleHandler } from '../handlers/TableStyleHandler.js';
 import { SectionHandler } from '../handlers/SectionHandler.js';
+import { ColorHandler } from '../handlers/ColorHandler.js';
+import { FontHandler } from '../handlers/FontHandler.js';
+import { ImageHandler } from '../handlers/ImageHandler.js';
+import { LayerHandler } from '../handlers/LayerHandler.js';
+import { ShapeHandler } from '../handlers/ShapeHandler.js';
+import { UndoHandler } from '../handlers/UndoHandler.js';
 
 export class IndesignMcpServer {
   private mcpServer: McpServer;
@@ -71,6 +77,12 @@ export class IndesignMcpServer {
       new TransformHandler(this.executor),
       new TableStyleHandler(this.executor),
       new SectionHandler(this.executor),
+      new ColorHandler(this.executor),
+      new FontHandler(this.executor),
+      new ImageHandler(this.executor),
+      new LayerHandler(this.executor),
+      new ShapeHandler(this.executor),
+      new UndoHandler(this.executor),
     ];
 
     for (const handler of handlers) {

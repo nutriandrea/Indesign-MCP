@@ -8,8 +8,14 @@ export interface TextContent {
   text: string;
 }
 
+export interface ImageContent {
+  type: 'image';
+  data: string;
+  mimeType: string;
+}
+
 export type ToolResult = {
-  content: TextContent[];
+  content: (TextContent | ImageContent)[];
   isError?: boolean;
 };
 

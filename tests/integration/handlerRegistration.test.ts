@@ -86,21 +86,21 @@ describe('Handler Registration', () => {
     expect(duplicates).toEqual([]);
   });
 
-  it('should produce exactly 81 tools across all 12 handlers', () => {
+  it('should produce exactly 76 tools across all 12 handlers', () => {
     let total = 0;
     for (const { instance } of handlerPairs) {
       total += instance.tools.length;
     }
-    expect(total).toBe(81);
+    expect(total).toBe(76);
   });
 
   it('should have tool names prefixed with handler category', () => {
     for (const { name, instance } of handlerPairs) {
       const category = instance.name;
       for (const tool of instance.tools) {
-        // ObjectHandler uses sub-category prefixes (layer_, image_, shape_, group_)
+        // ObjectHandler uses sub-category prefixes (image_, shape_, group_)
         if (name === 'ObjectHandler') {
-          const validPrefixes = ['layer_', 'image_', 'shape_', 'group_'];
+          const validPrefixes = ['image_', 'shape_', 'group_'];
           expect(validPrefixes.some(p => tool.name.startsWith(p))).toBe(true);
         } else {
           expect(tool.name.startsWith(category + '_')).toBe(true);

@@ -1,6 +1,6 @@
 node_modules/
 dist/
-.omo/evidence/
+.omo/
 *.log
 .env
 test-config.json
