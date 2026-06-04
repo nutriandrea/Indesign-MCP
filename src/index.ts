@@ -8,9 +8,9 @@ async function main(): Promise<void> {
   const configPath = process.argv[2]; // optional path to config file
   const config = loadConfig(configPath);
 
-  // Override log level from env if set
-  if (process.env.LOG_LEVEL) {
-    config.logging.level = process.env.LOG_LEVEL as any;
+  process.env.LOG_LEVEL = config.logging.level;
+  if (process.env.LOG_LEVEL_OVERRIDE) {
+    process.env.LOG_LEVEL = process.env.LOG_LEVEL_OVERRIDE;
   }
 
   const server = new IndesignMcpServer(config);

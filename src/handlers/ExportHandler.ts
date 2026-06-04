@@ -80,12 +80,12 @@ export class ExportHandler implements IHandler {
   private async export(args: unknown, _extra: any): Promise<ToolResult> {
     const params = exportDocumentSchema.parse(args);
     const formatMap: Record<string, string> = {
-      pdf: 'ExportFormat.pdfType',
-      epub: 'ExportFormat.epubType',
-      html: 'ExportFormat.htmlType',
-      jpg: 'ExportFormat.jpgType',
-      png: 'ExportFormat.pngType',
-      package: 'ExportFormat.packageType',
+      pdf: 'ExportFormat.PDF_TYPE',
+      epub: 'ExportFormat.EPUB',
+      html: 'ExportFormat.HTML',
+      jpg: 'ExportFormat.JPG',
+      png: 'ExportFormat.PNG_FORMAT',
+      package: 'ExportFormat.PACKAGE',
     };
     const exportFormat = formatMap[params.format];
     const filePath = params.filePath || `~/Desktop/export.${params.format}`;

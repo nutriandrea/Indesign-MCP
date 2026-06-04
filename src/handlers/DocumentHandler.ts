@@ -133,9 +133,11 @@ export class DocumentHandler implements IHandler {
     const code = `
       if (!app.activeDocument) throw new Error("No active document");
       var doc = app.activeDocument;
+      var filePath = "";
+      try { filePath = doc.fullName.toString(); } catch(e) {}
       JSON.stringify({
         name: doc.name,
-        filePath: doc.fullPath,
+        filePath: filePath,
         pages: doc.pages.length,
         pageWidth: doc.documentPreferences.pageWidth,
         pageHeight: doc.documentPreferences.pageHeight,
@@ -154,10 +156,12 @@ export class DocumentHandler implements IHandler {
       var docs = app.documents;
       var result = [];
       for (var i = 0; i < docs.length; i++) {
+        var fp = "";
+        try { fp = docs[i].fullName.toString(); } catch(e) {}
         result.push({
           name: docs[i].name,
           pages: docs[i].pages.length,
-          filePath: docs[i].fullPath
+          filePath: fp
         });
       }
       JSON.stringify(result);

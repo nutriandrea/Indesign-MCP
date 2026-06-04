@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { BridgeRequest, BridgeResponse, BridgeStatus } from '../types/index.js';
 import { InDesignError } from '../utils/errorHandler.js';
 import { sanitizeCode } from '../utils/stringUtils.js';
+import { JSON_POLYFILL } from './jsonPolyfill.js';
 
 export class ScriptExecutor extends EventEmitter {
   private pending: Map<string, { resolve: (res: BridgeResponse) => void; reject: (err: Error) => void; timer: NodeJS.Timeout }> = new Map();
@@ -17,7 +18,8 @@ export class ScriptExecutor extends EventEmitter {
     code: string,
     timeout?: number,
   ): Promise<BridgeResponse> {
-    const sanitized = sanitizeCode(code);
+    const polyfilled = JSON_POLYFILL + '\n' + code;
+    const sanitized = sanitizeCode(polyfilled);
     const id = uuidv4();
     const request: BridgeRequest = {
       id,

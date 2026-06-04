@@ -144,7 +144,6 @@ export class ObjectHandler implements IHandler {
       layer.visible = ${params.visible};
       layer.locked = ${params.locked};
       layer.printable = ${params.printable};
-      layer.guide = ${params.guideLayer};
       JSON.stringify({ name: layer.name, index: layer.index });
     `;
     const response = await this.executor.execute(code);
@@ -161,8 +160,7 @@ export class ObjectHandler implements IHandler {
           index: i,
           visible: layers[i].visible,
           locked: layers[i].locked,
-          printable: layers[i].printable,
-          guide: layers[i].guide
+          printable: layers[i].printable
         });
       }
       JSON.stringify(result);

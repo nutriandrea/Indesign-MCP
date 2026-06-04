@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "indesign-nutria": {
+      "type": "local",
+      "command": [
+        "node",
+        "/Users/andreacacioppo/Indesign-MCP/dist/index.js",
+        "/Users/andreacacioppo/Indesign-MCP/opencode-indesign.json"
+      ],
+      "enabled": true
+    }
+  }
+}
