@@ -79,15 +79,26 @@ Now you can say things like:
 
 ## 🧠 AI Skills (`.opencode/skills/`)
 
-Three skills ship with this repo to make the agent consistent and reliable:
+Ten skills ship with this repo. They are **auto-loaded by trigger keywords** when you talk to the AI agent:
 
-| Skill | File | Purpose |
-|-------|------|---------|
-| **Aesthetic Preference** | `aesthetic-preference.md` | 8 questions the agent must ask before any creative work — font, color palette, style, margins, hierarchy, constraints. Builds a persistent JSON profile in `.sisyphus/context/`. |
-| **Layout Readability** | `layout-readability.md` | Automatic validation: checks overlays, text contrast, orphans/widows, visual hierarchy, spacing, overflow. Flags issues before delivery. |
-| **Export & Verify** | `export-verify.md` | Mandatory cycle: **modify → export JPG → analyze pixels (Python PIL) → fix → repeat**. Catches invisible text, wrong colors, misaligned elements. |
+| # | Skill | File | Purpose |
+|---|-------|------|---------|
+| 1 | **Aesthetic Preference** | `aesthetic-preference.md` | 8 questions before any creative work — font, palette, style, margins, constraints. Builds a persistent JSON profile. |
+| 2 | **Layout Readability** | `layout-readability.md` | Validates overlays, contrast, orphans/widows, hierarchy, spacing, overflow before delivery. |
+| 3 | **Export & Verify** | `export-verify.md` | Mandatory **modify → export JPG → analyze pixels → fix → repeat** cycle. |
+| 4 | **Import Word** | `import-word.md` | Imports `.docx`, maps Word styles (Heading 1/Normal/List) to InDesign paragraph styles. |
+| 5 | **Batch Operations** | `batch-operations.md` | Applies the same modification across N pages (bulk text, master apply, export all). |
+| 6 | **Image Optimize** | `image-optimize.md` | Place, resize, DPI check, relink images. Profiles for print (300dpi CMYK) vs web (72dpi RGB). |
+| 7 | **Table Format** | `table-format.md` | Creates and styles tables — columns, rows, borders, fills, text alignment, merge cells. |
+| 8 | **Template Manager** | `template-manager.md` | Save/load reusable page templates as `.indd` files or `.indt` library. |
+| 9 | **Export Batch** | `export-batch.md` | Exports the same document to **multiple formats at once** (PDF + JPG + PNG), each with its own profile. |
+| 10 | **Style Extractor** | `style-extractor.md` | Scans a folder of `.indd` files, **extracts full style profile** (fonts, colors, paragraph/character styles, master spreads, margins), saves as JSON, then replicates it on a new book layout. |
 
-The agent loads these automatically based on triggers. For example, saying _"crea una pagina"_ triggers the aesthetic preference skill.
+The agent loads each skill automatically when your request matches its triggers. For example:
+
+> _"crea una pagina"_ → loads **Aesthetic Preference**  
+> _"estrai stile dalla cartella indd e impagina un libro"_ → loads **Style Extractor**  
+> _"esporta in pdf e jpg"_ → loads **Export Batch**
 
 ---
 
@@ -141,7 +152,7 @@ The agent loads these automatically based on triggers. For example, saying _"cre
 │   └── utils/           # Config loader, logger, JSON polyfill
 ├── plugin/              # UXP panel source (index.html, index.js, manifest.json)
 ├── tests/               # E2E and unit tests
-├── .opencode/skills/    # AI agent skills (aesthetic, layout, verify)
+├── .opencode/skills/    # 10 AI agent skills
 ├── .sisyphus/context/   # Persistent aesthetic profile storage
 ├── dist/                # Compiled JavaScript
 ├── opencode.json        # OpenCode MCP configuration
