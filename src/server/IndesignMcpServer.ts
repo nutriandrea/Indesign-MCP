@@ -18,6 +18,16 @@ import { ResourcesHandler } from '../handlers/ResourcesHandler.js';
 import { BookHandler } from '../handlers/BookHandler.js';
 import { InteractiveHandler } from '../handlers/InteractiveHandler.js';
 import { XmlHandler } from '../handlers/XmlHandler.js';
+import { TocHandler } from '../handlers/TocHandler.js';
+import { NoteHandler } from '../handlers/NoteHandler.js';
+import { IndexHandler } from '../handlers/IndexHandler.js';
+import { GrepHandler } from '../handlers/GrepHandler.js';
+import { TextAdvancedHandler } from '../handlers/TextAdvancedHandler.js';
+import { XrefHandler } from '../handlers/XrefHandler.js';
+import { EffectHandler } from '../handlers/EffectHandler.js';
+import { TransformHandler } from '../handlers/TransformHandler.js';
+import { TableStyleHandler } from '../handlers/TableStyleHandler.js';
+import { SectionHandler } from '../handlers/SectionHandler.js';
 
 export class IndesignMcpServer {
   private mcpServer: McpServer;
@@ -51,6 +61,16 @@ export class IndesignMcpServer {
       new BookHandler(this.executor),
       new InteractiveHandler(this.executor),
       new XmlHandler(this.executor),
+      new TocHandler(this.executor),
+      new NoteHandler(this.executor),
+      new IndexHandler(this.executor),
+      new GrepHandler(this.executor),
+      new TextAdvancedHandler(this.executor),
+      new XrefHandler(this.executor),
+      new EffectHandler(this.executor),
+      new TransformHandler(this.executor),
+      new TableStyleHandler(this.executor),
+      new SectionHandler(this.executor),
     ];
 
     for (const handler of handlers) {

@@ -17,9 +17,9 @@ indesign-nutria-mcp is an MCP server that bridges AI agents (Claude, OpenCode, e
 | **STDIO** | MCP client ↔ Server | AI agents (OpenCode, Claude Desktop) |
 | **WebSocket** (port 8120) | Server ↔ InDesign | UXP plugin running inside InDesign |
 
-The server exposes **12 handlers** with 60+ tools covering the full InDesign DOM:
+The server exposes **22 handlers** with **100+ tools** covering the full InDesign DOM:
 
-`Document` · `Page` · `Text` · `Shape` · `Image` · `Table` · `Style` · `Layer` · `Master` · `Export` · `Book` · `Interactive` · `XML`
+`Document` · `Page` · `Text` · `TextAdvanced` · `Shape` · `Image` · `Table` · `TableStyle` · `Style` · `Layer` · `Master` · `Toc` · `Index` · `Note` · `Xref` · `Grep` · `Effect` · `Transform` · `Section` · `Export` · `Book` · `Interactive` · `XML`
 
 And when you need something custom — **`executeScript`** runs raw ExtendScript directly.
 
@@ -113,8 +113,8 @@ The agent loads each skill automatically when your request matches its triggers.
                                           │
                                     ┌─────┴─────┐
                                     │ Handlers   │
-                                    │ 12 modules │
-                                    │ 60+ tools  │
+                                    │ 22 handlers│
+                                    │ 100+ tools │
                                     └───────────┘
 ```
 
@@ -136,6 +136,16 @@ The agent loads each skill automatically when your request matches its triggers.
 | **Book** | list, open, getDocuments, synchronize |
 | **XML** | listTags, addTag, deleteTag, tagPageItem, export, import |
 | **Script** | executeScript (raw ExtendScript), getSwatches, getFonts, getTables, getMasterSpreads |
+| **Toc** | createStyle, generate, listStyles, update |
+| **Note** | addFootnote, listFootnotes, footnoteOptions, addEndnote |
+| **Index** | addEntry, generate, listTopics, createTopic |
+| **Grep** | grepFind, grepReplace, findFormat, replaceFormat |
+| **TextAdvanced** | adjustTracking, setLeading, changeCase, applyDropCap, insertSpecialChar, getTextBounds |
+| **Xref** | addCrossReference, updateCrossReferences, listCrossReferences |
+| **Effect** | applyDropShadow, applyTransparency, applyBlendMode, clearEffects |
+| **Transform** | resize, rotate, flip, align, distribute |
+| **TableStyle** | create, apply, list, update |
+| **Section** | add, list, delete |
 
 ---
 
@@ -145,7 +155,7 @@ The agent loads each skill automatically when your request matches its triggers.
 ├── src/
 │   ├── server/          # MCP server (STDIO transport)
 │   ├── bridge/          # WebSocket bridge + ExtendScript executor
-│   ├── handlers/        # 12 handler modules
+│   ├── handlers/        # 22 handler modules
 │   ├── schemas/         # Zod schemas for tool parameters
 │   ├── core/            # Core logic
 │   ├── types/           # TypeScript definitions
