@@ -17,9 +17,9 @@ indesign-nutria-mcp is an MCP server that bridges AI agents (Claude, OpenCode, e
 | **STDIO** | MCP client ↔ Server | AI agents (OpenCode, Claude Desktop) |
 | **WebSocket** (port 8120) | Server ↔ InDesign | UXP plugin running inside InDesign |
 
-The server exposes **22 handlers** with **100+ tools** covering the full InDesign DOM:
+The server exposes **31 handlers** with **177 tools** covering the full InDesign DOM:
 
-`Document` · `Page` · `Text` · `TextAdvanced` · `Shape` · `Image` · `Table` · `TableStyle` · `Style` · `Layer` · `Master` · `Toc` · `Index` · `Note` · `Xref` · `Grep` · `Effect` · `Transform` · `Section` · `Export` · `Book` · `Interactive` · `XML`
+`AnchoredObject` · `Book` · `Color` · `DataMerge` · `Document` · `Effect` · `Export` · `Font` · `Grep` · `Image` · `Index` · `Interactive` · `Layer` · `List` · `Master` · `Note` · `Object` · `Page` · `Resources` · `Section` · `Shape` · `Style` · `Table` · `TableStyle` · `Text` · `TextAdvanced` · `Toc` · `Transform` · `Undo` · `Xml` · `Xref`
 
 And when you need something custom — **`executeScript`** runs raw ExtendScript directly.
 
@@ -113,8 +113,8 @@ The agent loads each skill automatically when your request matches its triggers.
                                           │
                                     ┌─────┴─────┐
                                     │ Handlers   │
-                                    │ 22 handlers│
-                                    │ 100+ tools │
+                                    │ 31 handlers│
+                                    │ 177 tools  │
                                     └───────────┘
 ```
 
@@ -122,30 +122,42 @@ The agent loads each skill automatically when your request matches its triggers.
 
 | Handler | Tools |
 |---------|-------|
-| **Document** | create, open, save, close, getInfo, listOpen |
-| **Page** | add, delete, duplicate, move, getInfo, listAll, applyMaster |
-| **Text** | addFrame, setContent, getContent, getStories, findReplace, applyParagraphStyle |
-| **Shape** | create (rect/ellipse/polygon/line), list |
-| **Image** | place, list, relink, embed, unembed |
-| **Table** | create, setCell, addRow/Column, deleteRow/Column, getInfo |
-| **Style** | list/create paragraph, character, object styles; duplicate, delete |
-| **Layer** | create, list, setProperties |
-| **Master** | create, duplicate, apply, delete, list, getPages |
-| **Export** | export (PDF/EPUB/HTML/JPG/PNG/package), preflight, getSwatches, getFonts |
-| **Interactive** | list/add/delete hyperlinks, list buttons, list anchors |
+| **AnchoredObject** | create, getSettings, release, setPosition, setProperties |
 | **Book** | list, open, getDocuments, synchronize |
-| **XML** | listTags, addTag, deleteTag, tagPageItem, export, import |
-| **Script** | executeScript (raw ExtendScript), getSwatches, getFonts, getTables, getMasterSpreads |
+| **Color** | swatch list/create/delete, ink list, gradient create, apply |
+| **DataMerge** | selectDataSource, listFields, mergeRecords, export, removeDataSource |
+| **Document** | create, open, save, close, getInfo, listOpen |
+| **Effect** | applyDropShadow, applyTransparency, applyFeather, applyGradientFeather |
+| **Export** | export (PDF/EPUB/HTML/JPG/PNG/package), preflight, getSwatches, getFonts, getTables, getMasterSpreads, getXmlTags |
+| **Font** | list, find, change, missing check, glyph insert |
+| **Grep** | find, replace, findFormat, replaceFormat |
+| **Image** | place, info, adjust, fit, relink |
+| **Index** | addEntry, createTopic, generate, listTopics |
+| **Interactive** | list/add/delete hyperlinks, list buttons, list anchors |
+| **Layer** | create, list, setProperties, reorder, delete |
+| **List** | define, list, applyToParagraph/Selection, removeFromParagraph, restartNumbering |
+| **Master** | create, duplicate, apply, delete, list, getPages |
+| **Note** | addFootnote/Endnote, listFootnotes, footnoteOptions |
+| **Object** | shape list/create, group list/ungroup, image getLinks/list |
+| **Page** | add, delete, duplicate, move, getInfo, listAll, applyMaster |
+| **Resources** | list/update/embed/unembed links, getLinkInfo |
+| **Section** | create, list, setNumbering, delete |
+| **Shape** | rectangle/ellipse/line/polygon create, delete, modify |
+| **Style** | list/create paragraph/character/object styles, duplicate, delete |
+| **Table** | create, setCell, addRow/Column, deleteRow/Column, merge/split cells, getInfo/list, header/footer, alignment, fills, strokes |
+| **TableStyle** | create, apply, list, update; cellStyle create/list |
+| **Text** | addFrame, setContent, getContent, getTextFrames, getStories, findReplace, applyParagraphStyle |
+| **TextAdvanced** | setColumns, setDropCap, link/unlink frames, setAutoSize, setHyphenation, setTabs, setTextWrap, setKeepOptions, setParagraphRules, setInsetSpacing, setVerticalJustification, setFirstBaseline, setIgnoreWrap |
 | **Toc** | createStyle, generate, listStyles, update |
-| **Note** | addFootnote, listFootnotes, footnoteOptions, addEndnote |
-| **Index** | addEntry, generate, listTopics, createTopic |
-| **Grep** | grepFind, grepReplace, findFormat, replaceFormat |
-| **TextAdvanced** | adjustTracking, setLeading, changeCase, applyDropCap, insertSpecialChar, getTextBounds |
-| **Xref** | addCrossReference, updateCrossReferences, listCrossReferences |
-| **Effect** | applyDropShadow, applyTransparency, applyBlendMode, clearEffects |
-| **Transform** | resize, rotate, flip, align, distribute |
-| **TableStyle** | create, apply, list, update |
-| **Section** | add, list, delete |
+| **Transform** | resize/rotate/flip/align/distribute |
+| **Undo** | undo, redo, history |
+| **Xml** | listTags, addTag, deleteTag, tagPageItem, export, import |
+| **Xref** | create, list, updateFormat |
+| **Color** | swatch_create, swatch_list, swatch_delete, gradient_create, tint_create |
+| **Font** | list, find, set |
+| **Object** | select, getProperties, setProperties, delete, lock, unlock, group, ungroup |
+| **Resources** | listLinks, updateLink |
+| **Undo** | undo, redo, history |
 
 ---
 
@@ -155,7 +167,7 @@ The agent loads each skill automatically when your request matches its triggers.
 ├── src/
 │   ├── server/          # MCP server (STDIO transport)
 │   ├── bridge/          # WebSocket bridge + ExtendScript executor
-│   ├── handlers/        # 22 handler modules
+│   ├── handlers/        # 31 handler modules
 │   ├── schemas/         # Zod schemas for tool parameters
 │   ├── core/            # Core logic
 │   ├── types/           # TypeScript definitions

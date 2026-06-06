@@ -44,6 +44,14 @@ export class SectionHandler implements IHandler {
         },
         handler: compose(withLogging('section_setNumbering'), withErrorHandling())(this.setNumbering.bind(this)),
       },
+      {
+        name: 'section_delete',
+        description: 'Delete a section by its index',
+        inputSchema: {
+          sectionIndex: z.number().int().min(0),
+        },
+        handler: compose(withLogging('section_delete'), withErrorHandling())(this.delete.bind(this)),
+      },
     ];
   }
 
@@ -109,6 +117,20 @@ export class SectionHandler implements IHandler {
         });
       }
       JSON.stringify(result);
+    `;
+    const response = await this.executor.execute(code);
+    return formatResponse(response.result);
+  }
+
+  private async delete(args: unknown, _extra: any): Promise<ToolResult> {
+    const params = z.object({
+      sectionIndex: z.number().int().min(0),
+    }).parse(args as Record<string, unknown>);
+
+    const code = `
+      var doc = app.activeDocument;
+      doc.sections[${params.sectionIndex}].remove();
+      JSON.stringify({ deleted: true, sectionIndex: ${params.sectionIndex} });
     `;
     const response = await this.executor.execute(code);
     return formatResponse(response.result);
